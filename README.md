@@ -1,0 +1,2 @@
+# DocSIm
+Pràctica Algorismia
