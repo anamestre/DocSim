@@ -19,7 +19,8 @@ int main(int argc, char *argv[]) {
   mFiles.push_back(&file4);
   JaccApprox mJA(k,t,mFiles);
 
-  vector<vector<double> > matriu = mJA.obtainJaccardApproximation();
+  vector<vector< double > > matriu(mFiles.size(),vector<double>(mFiles.size(),0.0));
+  mJA.obtainJaccardApproximation(matriu);
   for (int i = 0; i < matriu.size(); ++i) {
     for (int j = 0; j < matriu.size(); ++j) {
       if (i == j) cout << "X ";
@@ -27,8 +28,4 @@ int main(int argc, char *argv[]) {
     }
     cout << endl;
   }
-
-
-
-  // cout << "Jaccard's approximation of these files is " << mJA.obtainJaccardApproximation() << endl;
 }
