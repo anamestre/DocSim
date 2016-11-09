@@ -1,16 +1,17 @@
 #include "JaccApprox.hh"
 using namespace std;
 
-JaccApprox::JaccApprox(unsigned int k_, unsigned int t_, string mFile_1_, string mFile_2_) {
-  k = k_;
-  t = t_;
-  mFile_1 = mFile_1_;
-  mFile_2 = mFile_2_;
-  JaccApprox::bigPrimesVector = {547,563,733,619,691,829,911,701,599,601,827,659};
-}
+JaccApprox::JaccApprox(unsigned int k, unsigned int t, vector<string*> mFiles) {
+  this->k = k;
+  this->t = t;
+  this->mFiles = mFiles;
 
-bool JaccApprox::sameMinhashSignature() {
-  return minhashSignature(mFile_1) == minhashSignature(mFile_2);
+  SimMat = vector<vector< double > > (mFiles.size(),vector<double>(mFiles.size(),0.0));
+
+  valueToUptate = double(1)/double(t); // Value to sum when there is a match
+
+  JaccApprox::bigPrimesVector = {547,563,733,619,691,829,911,701,599,601,827,659};
+  maxIntHash = 0x11111111;
 }
 
 unsigned int JaccApprox::hashFromShingle(const string& shingle) {
@@ -20,10 +21,11 @@ unsigned int JaccApprox::hashFromShingle(const string& shingle) {
   for (int i = 0; i < shingle.length(); ++i) {
     a = (a*b) + shingle[i];
   }
-  return a%(0x11111111);
+  return a%(maxIntHash);
 }
 
-unsigned int JaccApprox::minhashSignature(const string& mFile) {
+unsigned int JaccApprox::minhashSignature(string* mFilePointer) {
+  string mFile = *mFilePointer;
   if (mFile.length() < k) return hashFromShingle(mFile);
   unsigned int minimumHash = hashFromShingle(mFile.substr(0,k));
   for (int i = 1; i <= mFile.length() - k; ++i) {
@@ -43,11 +45,29 @@ void JaccApprox::getNewHashValues() {
   mHV.hash_2 = rand()%bigPrime();
 }
 
-double JaccApprox::obtainJaccardApproximation() {
-  unsigned int signature_matches = 0;
+void JaccApprox::computeSignatures(vector<unsigned int>& signatures) {
+  for (int i = 0; i < signatures.size(); ++i) {
+    signatures[i] = minhashSignature(mFiles[i]);
+  }
+}
+
+void JaccApprox::updateSimValues(const vector<unsigned int>& signatures) {
+  for (int i = 0; i < signatures.size(); ++i) {
+    unsigned int aux = signatures[i];
+    for (int j = 0; j < signatures.size(); ++j) {
+      if (i != j and aux == signatures[j]) {
+        SimMat[i][j] += valueToUptate;
+      }
+    }
+  }
+}
+
+vector<vector<double> > JaccApprox::obtainJaccardApproximation() {
+  vector<unsigned int> signatures(mFiles.size());
   for (unsigned int i = 0; i < t; ++i) {
     getNewHashValues();
-    if (sameMinhashSignature()) signature_matches += 1;
+    computeSignatures(signatures);
+    updateSimValues(signatures);
   }
-  return ((double)signature_matches/(double) t);
+  return SimMat;
 }
