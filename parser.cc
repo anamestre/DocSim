@@ -10,9 +10,9 @@ using namespace std;
 
 //Pre: s es un set
 //Post: imprimeix per pantalla el contingut del set
-void print_set(const set<string>& s) {
+void print_set(const set<int>& s) {
     cout << "CONTINGUT DEL SET" << endl;
-    for (set<string>::iterator it=s.begin(); it!=s.end(); ++it) {
+    for (set<int>::iterator it=s.begin(); it!=s.end(); ++it) {
         cout << *it << endl;
     }
 }
@@ -25,6 +25,6 @@ int main() {
     cout << "Introdueix la longitud dels shingles:" << endl;
     int k;
     cin >> k;
-    set<string> shingles = parser(path, k);
+    set<int> shingles = parser(path, k);
     print_set(shingles);
 }

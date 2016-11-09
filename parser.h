@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstdlib>
 using namespace std;
 
 //Pre: c es un caracter
@@ -17,17 +18,26 @@ bool is_whitespace (char c) {
     return c == ' ' or c == '\n' or c == '\t';
 }
 
+int hash_shingle(string shingle) {
+	int maxhash = 0x11111111;
+	int hash = 0;
+	for (int i = 0; i < shingle.size(); ++i) {
+		hash += shingle[i];
+	}
+	return hash%maxhash;
+}
+
 
 //Pre: path indica el camí a un document de text, k es mes gran que zero
 //Post: retorna un conjunt amb tots els k-shingles extrets del document
-set<string> parser(string path, int k) {
+set<int> parser(string path, int k) {
     ifstream file;
     file.open(path.c_str());
     if (file.is_open()) {
         char c = 'a';   //"Falsa" inicialitzacio
         int i, j;
         i = j = 0;
-        set<string> shingles;
+        set<int> shingles;
         while (c != EOF) {
             string s;
             bool whitespace = false;
@@ -49,7 +59,7 @@ set<string> parser(string path, int k) {
                     ++j;
                 }
             }
-            if (s.size() == k) shingles.insert(s);
+            if (s.size() == k) shingles.insert(hash_shingle(s));
             j = 0;
             ++i;
         }
