@@ -1,13 +1,33 @@
 #include <iostream>
 #include <string>
+#include <vector>
+#include <fstream>
 using namespace std;
 
-void loadDocs(string path, int num, vector<string>& docs) {
-    docs = vector<string>(num);
+void loadPaths (string path, int num, vector<string>& paths) {
+    paths = vector<string>(num);
     for (int i = 1; i <= num; ++i) {
-        docs[i] = path+"/doc"+i;
+        paths[i] = path;
+        paths[i] += "/doc";
+        paths[i] += i;
     }
 }
+
+void loadDoc(int num, string& doc, const vector<string>& paths) {
+    ifstream file;
+    file.open(paths[num].c_str());
+    if (file.is_open()) {
+        file.seekg(0, file.end);
+        int length = file.tellg();
+        file.seekg(0, file.beg);
+
+        char* readFile = new char [length];
+        file.read(readFile, length);
+        doc = readFile;
+        file.close();
+    }
+}
+
 
 void showMenu() {
     cout << "Selecciona una operació:" << endl;
@@ -20,7 +40,7 @@ void showMenu() {
 
 int main() {
     int ops;
-    vector<string> docs;
+    vector<string> paths;
     cout << "DocSim" << endl;
     showMenu();
     cin >> ops;
@@ -41,7 +61,7 @@ int main() {
             cout << "Introdueix el número de documents:" << endl;
             int num;
             cin >> num;
-            loadDocs(path, num);
+            loadPaths(path, num, paths);
             cout << "Càrrega completada" << endl;
         }
         else {
