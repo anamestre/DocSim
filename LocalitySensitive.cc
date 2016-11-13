@@ -1,18 +1,21 @@
-//#include "LocalitySensitive.hh"
-#include "JaccApprox.hh"
-#include <set>
-#include <vector>
-#include <map>
-#include <list>
-#include <cmath>
+#include "LocalitySensitive.hh"
+
 using namespace std;
 
 vector<vector<double> > buckets;
 vector<vector<double> > matrix;
 vector<vector<bool> > marcats;
 
+LocalitySensitive :: LocalitySensitive(const vector<string*>& files, int k, int t, int band, int modBuckets) {
+  fillMatrix(files);
+  this->k = k;
+  this->t = t;
+  this->band = band;
+  this->modBuckets = modBuckets;
+}
 
-void fillMatrix(const vector<string*>& files, int k, int t){
+
+void LocalitySensitive :: fillMatrix(const vector<string*>& files){
   JaccApprox ja(k,t,files);
   vector<vector<double> > matriu(files.size(),vector<double>(files.size(),0.0));
   matrix = matriu;
@@ -22,13 +25,13 @@ void fillMatrix(const vector<string*>& files, int k, int t){
 }
 
 
-double hashFunction(const vector<double>& vec, int mod){
+double LocalitySensitive :: hashFunction(const vector<double>& vec){
    double num = 0.0;
    for(int i = 0; i < vec.size(); ++i) num += vec[i];    
-   return fmod(num,mod);
+   return fmod(num,modBuckets);
 }
 
-void fillColumn(vector<double>& col, int i, int z){
+void LocalitySensitive :: fillColumn(vector<double>& col, int i, int z){
   int x = 0;
   for(int j = i; j < col.size(); ++j){
     col[x] = matrix[j][z];
@@ -37,7 +40,7 @@ void fillColumn(vector<double>& col, int i, int z){
 }
   
 // Pre: band és divisor de la mida de files de la matriu de signatures.
-void getBuckets(int band, int modBuckets){
+void LocalitySensitive ::getBuckets(){
   int n = matrix.size();
   int m = matrix[0].size();
   
@@ -52,13 +55,14 @@ void getBuckets(int band, int modBuckets){
   for(int b = 0; b < band; b += rows){ // recorrer les "files" -> les bands.
     for(int i = 0; i < m; ++i){  // recorrer les columnes de cada band.
       fillColumn(column, b, i);
-      buckets[j][i] = hashFunction(column, modBuckets);
+      buckets[j][i] = hashFunction(column);
     }
     ++j;
   }
 }
 
-void getCandidates(map<int, list<int> >& documents){
+void LocalitySensitive :: getCandidates(map<int, list<int> >& documents){
+  getBuckets();
   int n = buckets.size();
   int m = buckets[0].size();
     for(int i = 0; i < n; ++i){
@@ -77,7 +81,8 @@ void getCandidates(map<int, list<int> >& documents){
     }
 }
 
-void printCandidates(){
+
+void LocalitySensitive::printCandidates(){
   map<int, list<int> > documents;
   getCandidates(documents);
   map<int, list<int> > :: iterator it;
@@ -90,26 +95,5 @@ void printCandidates(){
     }
   }
 }
-  
 
-int main(){
-  string file1 = "En el caso de que su baja se prolonga other siiiiiise hasta 2017, el alemán no estará en Mestalla contra el Valencia, encuentro de Liga tras la disputa del Mundial de Clubes, que finaliza el 18 de diciembre.";
-  string file2 = "alemán adio José Alvalade (5ª jornad other siiiiiia de la fase de grupos de la Champions), Spotural Leonesa (vuelta de la Copa del Rey), El Clásico ante el Barcelona en el Camp Nou, Borussia Dortmund en el Santiago Bernabéu (6ª y última jornada de la fase de grupos de la Champions) y Deportivo de la Coruña.En el caso de que su baja se prolongase hasta 2017, el alemán no estará en Mestalla contra el Valencia, encuentro de Liga tras la disputa del Mundial de Clubes, que finaliza el 18 de diciembre.";
-  string file3 = "Heeeeeeeello from the other siiiiiiide";
-  string file4 = "parapjsgnsjgfgfdhdfljg other siiiiii";
-  int k, t, band, modBuckets;
-  cout << "Insereix k, t, nombre de bands i nombre de buckets: " << endl;
-  cin >> k >> t >> band >> modBuckets;
-  
-  vector<string* > files;
-  files.push_back(&file1);
-  files.push_back(&file2);
-  files.push_back(&file3);
-  files.push_back(&file4);
-  
-  fillMatrix(files, k, t);
-  getBuckets(band, modBuckets);
-  printCandidates();
-  
-}
 
