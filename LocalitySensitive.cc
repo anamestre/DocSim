@@ -36,8 +36,8 @@ void fillColumn(vector<double>& col, int i, int z){
   }
 }
   
-// Pre: band és divisor de la mida de la matriu de signatures.
-void getBuckets(int band, double modBuckets){
+// Pre: band és divisor de la mida de files de la matriu de signatures.
+void getBuckets(int band, int modBuckets){
   int n = matrix.size();
   int m = matrix[0].size();
   
