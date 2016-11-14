@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <ctime>
 #include "JaccApprox.hh"
 using namespace std;
 
@@ -105,6 +106,7 @@ bool readFiles(vector<string>& mFiles, const vector<string>& paths) {
 }
 
 void jaccardApproximation(const vector<string>& paths, unsigned int k, unsigned int t) {
+  clock_t begin = clock();
   vector<string> mFiles(paths.size());
   bool readOK = readFiles(mFiles,paths);
   if (readOK) {
@@ -113,6 +115,9 @@ void jaccardApproximation(const vector<string>& paths, unsigned int k, unsigned 
     JaccApprox mJA(k,t,mFileReferences);
     vector<vector< double > > matriu(mFiles.size(),vector<double>(mFiles.size(),0.0));
     mJA.obtainJaccardApproximation(matriu);
+    clock_t end = clock();
+    double elapsed_millisecs = double(end - begin) / (CLOCKS_PER_SEC/1000);
+    cout << "El temps d'execució de l'algorisme ha estat de " << elapsed_millisecs << " mil·lisegons" << endl;
     cout << "Vols veure el resultat en format compacte o extès? (c/e)" << endl;
     char o;
     cin >> o;
@@ -128,13 +133,13 @@ void jaccardApproximation(const vector<string>& paths, unsigned int k, unsigned 
 
 // ----------------------------------------------
 
-void showMenu() {
+void showMenu(unsigned int k, unsigned int t) {
     cout << "Selecciona una operació:" << endl;
     cout << "-1: Similitud de Jaccard per dos documents" << endl;
     cout << "-2: Aproximació de la similitud de Jaccard mitjançant signatures minhash" << endl;
     cout << "-3: Ús de l'algorisme LSH pel càlcul de similituds" << endl;
     cout << "-4: Càrrega de documents" << endl;
-    cout << "-5: Modificar els paràmetres k i t (Valors per defecte 9 i 100, respectivament)" << endl;
+    cout << "-5: Modificar els paràmetres k i t (actualment, "<< k << " i " << t << ", valors per defecte 9 i 100, respectivament)" << endl;
     cout << "99: Sortir"<< endl;
 }
 
@@ -145,7 +150,7 @@ int main() {
     t = 100;
     vector<string> paths;
     cout << "======= DocSim =======" << endl;
-    showMenu();
+    showMenu(k,t);
     cin >> ops;
     while(ops != 99) {
         if (ops == -1) {
@@ -192,7 +197,7 @@ int main() {
             cout << "L'operació no existeix" << endl;
         }
         cout << "-------" << endl;
-        showMenu();
+        showMenu(k,t);
         cin >> ops;
     }
 
