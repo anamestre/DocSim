@@ -8,9 +8,11 @@
 #include "JaccApprox.hh"
 using namespace std;
 
+const string path = "./Generator/";
+
 void loadPaths (string path, int num, vector<string>& paths) {
     paths = vector<string>(num);
-    for (int i = 1; i < num; ++i) {
+    for (int i = 1; i <= num; ++i) {
         paths[i-1] = path;
         paths[i-1] += "doc";
         paths[i-1] += to_string(i);
@@ -22,7 +24,7 @@ void loadPaths (string path, int num, vector<string>& paths) {
 bool loadDoc(int num, string& doc, const vector<string>& paths) {
     ifstream file;
     file.open(paths[num].c_str());
-    cout << "Path: " << paths[num].c_str() << endl;
+    //cout << "Path: " << paths[num].c_str() << endl;
     if (file.is_open()) {
         file.seekg(0, file.end);
         int length = file.tellg();
@@ -67,7 +69,7 @@ void mostraResultat(const vector<vector< double > >& matriu) {
   }
 }
 
-// void readFiles(vector<string>& mFiles) {
+// void readFilesOld(vector<string>& mFiles) {
 //   string file1 = "En el caso de que su baja se prolonga other siiiiiise hasta 2017, el alemán no estará en Mestalla contra el Valencia, encuentro de Liga tras la disputa del Mundial de Clubes, que finaliza el 18 de diciembre.";
 //   string file2 = "alemán adio José Alvalade (5ª jornad other siiiiiia de la fase de grupos de la Champions), Spotural Leonesa (vuelta de la Copa del Rey), El Clásico ante el Barcelona en el Camp Nou, Borussia Dortmund en el Santiago Bernabéu (6ª y última jornada de la fase de grupos de la Champions) y Deportivo de la Coruña.En el caso de que su baja se prolongase hasta 2017, el alemán no estará en Mestalla contra el Valencia, encuentro de Liga tras la disputa del Mundial de Clubes, que finaliza el 18 de diciembre.";
 //   string file3 = "Heeeeeeeello from the other siiiiiiide";
@@ -86,12 +88,15 @@ bool readFiles(vector<string>& mFiles, const vector<string>& paths) {
   else {
     bool valid;
     bool totsValids = true;
-    for (int i = 1; i < paths.size(); ++i) {
+    for (int i = 0; i < paths.size(); ++i) {
       string doc;
       valid = loadDoc(i,doc,paths);
       if (not valid) {
-        cout << "El path del document " << i << " és incorrecte" << endl;
+        cout << "El path del document " << i+1 << " és incorrecte" << endl;
         totsValids = false;
+      }
+      else {
+        mFiles[i] = doc;
       }
     }
     return totsValids;
@@ -99,11 +104,10 @@ bool readFiles(vector<string>& mFiles, const vector<string>& paths) {
   return false;
 }
 
-void jaccardApproximation(const vector<string>& paths) {
-  unsigned int k = 9; // atoi(argv[1]);
-  unsigned int t = 100; // atoi(argv[2]);
-  vector<string> mFiles;
-  if (readFiles(mFiles,paths)) {
+void jaccardApproximation(const vector<string>& paths, unsigned int k, unsigned int t) {
+  vector<string> mFiles(paths.size());
+  bool readOK = readFiles(mFiles,paths);
+  if (readOK) {
     vector<string*> mFileReferences;
     getReferencesFromFiles(mFiles,mFileReferences);
     JaccApprox mJA(k,t,mFileReferences);
@@ -122,11 +126,15 @@ void showMenu() {
     cout << "-2: Aproximació de la similitud de Jaccard mitjançant signatures minhash" << endl;
     cout << "-3: Ús de l'algorisme LSH pel càlcul de similituds" << endl;
     cout << "-4: Càrrega de documents" << endl;
+    cout << "-5: Modificar els paràmetres k i t (Valors per defecte 9 i 100, respectivament)" << endl;
     cout << "99: Sortir"<< endl;
 }
 
 int main() {
     int ops;
+    unsigned int k, t;
+    k = 9;
+    t = 100;
     vector<string> paths;
     cout << "DocSim" << endl;
     showMenu();
@@ -136,7 +144,7 @@ int main() {
             //Integrar i tal
         }
         else if (ops == -2 ) {
-          jaccardApproximation(paths);
+          jaccardApproximation(paths,k,t);
         }
         else if (ops == -3) {
 
@@ -149,11 +157,15 @@ int main() {
             // int num;
             // cin >> num;
 
-            string path = "./Generator/";
             int num = getNumOfFiles(path);
             cout << "Al directori " << path << " s'han trobat " << num << " fitxers" << endl;
             loadPaths(path, num, paths);
             cout << "Càrrega completada" << endl;
+        }
+        else if (ops == -5) {
+          cout << "Si us plau, entra els valors de k i t, separats per un espai" << endl;
+          cin >> k >> t;
+          cout << "Els valors de k i t s'han actualitzat a " << k << " i " << t << " respectivament." << endl;
         }
         else {
             cout << "L'operació no existeix" << endl;
