@@ -8,7 +8,7 @@
 #include "JaccApprox.hh"
 using namespace std;
 
-string path = "./Generator/";
+const string path = "./Generator/";
 
 void loadPaths (string path, int num, vector<string>& paths) {
     paths = vector<string>(num);
@@ -45,9 +45,8 @@ int getNumOfFiles(string path) {
   dp = opendir (path.c_str());
 
   if (dp != NULL) {
-    while (ep = readdir(dp)) i++;
-    if (path == "./Generator/") return i-6; //6 archivos necesarios (makefile, codigo fuente.. etc) que no son para procesar
-    else return i-2; // En caso de CustomDocs, solo son 2 archivos extra (. , ..)
+    while (ep = readdir (dp)) i++;
+    return i-6; //6 archivos necesarios (makefile, codigo fuente.. etc) que no son para procesar
     (void) closedir (dp);
   }
   else return -1;
@@ -60,25 +59,26 @@ void getReferencesFromFiles(vector<string>& mFiles, vector<string*>& mFileRefere
     mFileReferences.push_back(&mFiles[i]);
 }
 
-// void mostraResultat(const vector<vector< double > >& matriu) {
-//   for (int i = 0; i < matriu.size(); ++i) {
-//     for (int j = 0; j < matriu.size(); ++j) {
-//       if (i == j) cout << "X ";
-//       else cout << matriu[i][j] << " ";
-//     }
-//     cout << endl;
-//   }
-// }
-
 void mostraResultat(const vector<vector< double > >& matriu) {
   for (int i = 0; i < matriu.size(); ++i) {
-    cout << " === Similaritud amb document " << i+1 << " ===" << endl;
     for (int j = 0; j < matriu.size(); ++j) {
-      if (i != j) cout << "doc" << j+1 << ": " << matriu[i][j] << " ";
+      if (i == j) cout << "X ";
+      else cout << matriu[i][j] << " ";
     }
     cout << endl;
   }
 }
+
+// void readFilesOld(vector<string>& mFiles) {
+//   string file1 = "En el caso de que su baja se prolonga other siiiiiise hasta 2017, el alemán no estará en Mestalla contra el Valencia, encuentro de Liga tras la disputa del Mundial de Clubes, que finaliza el 18 de diciembre.";
+//   string file2 = "alemán adio José Alvalade (5ª jornad other siiiiiia de la fase de grupos de la Champions), Spotural Leonesa (vuelta de la Copa del Rey), El Clásico ante el Barcelona en el Camp Nou, Borussia Dortmund en el Santiago Bernabéu (6ª y última jornada de la fase de grupos de la Champions) y Deportivo de la Coruña.En el caso de que su baja se prolongase hasta 2017, el alemán no estará en Mestalla contra el Valencia, encuentro de Liga tras la disputa del Mundial de Clubes, que finaliza el 18 de diciembre.";
+//   string file3 = "Heeeeeeeello from the other siiiiiiide";
+//   string file4 = "parapjsgnsjgfgfdhdfljg other siiiiii";
+//   mFiles.push_back(file1);
+//   mFiles.push_back(file3);
+//   mFiles.push_back(file2);
+//   mFiles.push_back(file4);
+// }
 
 bool readFiles(vector<string>& mFiles, const vector<string>& paths) {
   if (paths.size() == 0) {
@@ -136,7 +136,7 @@ int main() {
     k = 9;
     t = 100;
     vector<string> paths;
-    cout << "======= DocSim =======" << endl;
+    cout << "DocSim" << endl;
     showMenu();
     cin >> ops;
     while(ops != 99) {
@@ -150,30 +150,17 @@ int main() {
 
         }
         else if (ops == -4) {
-            cout << "Quins documents vols carregar?" << endl;
-            cout << "-1 Documents del directori Generator (permutacions del mateix document)" << endl;
-            cout << "-2 Documents del directori CustomDocs (documents qualssevol afegits per l'usuari)" << endl;
-            int option;
-            bool validOption = true;
-            cin >> option;
-            switch (option) {
-              case -1:
-                path = "./Generator/";
-                break;
-              case -2:
-                path = "./CustomDocs/";
-                break;
-              default:
-              validOption = false;
-                cout << "La opció escollida es invàlida" << endl;
-                break;
-            }
-            if (validOption) {
-              int num = getNumOfFiles(path);
-              cout << "Al directori " << path << " s'han trobat " << num << " fitxers" << endl;
-              loadPaths(path, num, paths);
-              cout << "Càrrega completada" << endl;
-          }
+            // cout << "Introdueix el camí a la carpeta que conté els documents:" << endl;
+            // string path;
+            // cin >> path;
+            // cout << "Introdueix el número de documents:" << endl;
+            // int num;
+            // cin >> num;
+
+            int num = getNumOfFiles(path);
+            cout << "Al directori " << path << " s'han trobat " << num << " fitxers" << endl;
+            loadPaths(path, num, paths);
+            cout << "Càrrega completada" << endl;
         }
         else if (ops == -5) {
           cout << "Si us plau, entra els valors de k i t, separats per un espai" << endl;
