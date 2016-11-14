@@ -60,15 +60,15 @@ void getReferencesFromFiles(vector<string>& mFiles, vector<string*>& mFileRefere
     mFileReferences.push_back(&mFiles[i]);
 }
 
-// void mostraResultat(const vector<vector< double > >& matriu) {
-//   for (int i = 0; i < matriu.size(); ++i) {
-//     for (int j = 0; j < matriu.size(); ++j) {
-//       if (i == j) cout << "X ";
-//       else cout << matriu[i][j] << " ";
-//     }
-//     cout << endl;
-//   }
-// }
+void mostraResultatSimplificat(const vector<vector< double > >& matriu) {
+  for (int i = 0; i < matriu.size(); ++i) {
+    for (int j = 0; j < matriu.size(); ++j) {
+      if (i == j) cout << "X ";
+      else cout << matriu[i][j] << " ";
+    }
+    cout << endl;
+  }
+}
 
 void mostraResultat(const vector<vector< double > >& matriu) {
   for (int i = 0; i < matriu.size(); ++i) {
@@ -113,7 +113,15 @@ void jaccardApproximation(const vector<string>& paths, unsigned int k, unsigned 
     JaccApprox mJA(k,t,mFileReferences);
     vector<vector< double > > matriu(mFiles.size(),vector<double>(mFiles.size(),0.0));
     mJA.obtainJaccardApproximation(matriu);
-    mostraResultat(matriu);
+    cout << "Vols veure el resultat en format compacte o extès? (c/e)" << endl;
+    char o;
+    cin >> o;
+    if (o == 'e') mostraResultat(matriu);
+    else if (o != 'c') {
+      cout << "Opció no vàlida, es mostrarà compacte" << endl;
+      mostraResultatSimplificat(matriu);
+    }
+    else mostraResultatSimplificat(matriu);
   }
   else cout << "Els fitxers no s'han llegit correctament." << endl;
 }
