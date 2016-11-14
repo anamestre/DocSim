@@ -13,7 +13,7 @@ void mostra(const vector<string>& perm) {
    ++contPerm;
    if (contPerm > numPerm) exit(0);
    else {
-     string name="file_" + to_string(contPerm) + ".txt";
+     string name="doc" + to_string(contPerm) + ".txt";
      ofstream fs(name);
       for (int i = 0; i < perm.size(); ++i) {
   	     fs << perm[i] <<endl;
