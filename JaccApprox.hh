@@ -5,6 +5,9 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 using namespace std;
 
 struct HashValues {
@@ -20,12 +23,9 @@ class JaccApprox {
       unsigned int t; // number of hash functions used
       unsigned int k; // size of the shingles
       vector<string*> mFiles;
-
       void computeSignatures(vector<unsigned int>& signatures);
       void updateSimValues(const vector<unsigned int>& signatures, vector<vector<double> >& result);
-      double valueToUptate;
-
-
+      double valueToUptate; // Value to sum when there is a match
       HashValues mHV;
       unsigned int maxIntHash; // used in the computation of the hash
       vector<unsigned int> bigPrimesVector;
