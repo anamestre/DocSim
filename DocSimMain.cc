@@ -6,7 +6,9 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <ctime>
+#include <algorithm>
 #include "JaccApprox.hh"
+#include "parser.h"
 using namespace std;
 
 string path = "./Generator/";
@@ -52,6 +54,31 @@ int getNumOfFiles(string path) {
     (void) closedir (dp);
   }
   else return -1;
+}
+
+// -------------- FUNCIONS DE DOCSIM 1 --------------------------
+
+set<int> reunion (const set<int>& a, const set<int>& b) {
+	set<int> result = a;
+	for (set<int>::iterator it=b.begin(); it!=b.end(); ++it) {
+        result.insert(*it);
+    }
+    return result;
+}
+
+double jaccard(string pathdoc1, string pathdoc2, int k) {
+	clock_t begin = clock();
+	set<int> a = parser(pathdoc1, k);
+	set<int> b = parser(pathdoc2, k);
+	set<int> reunionset = reunion(a, b);
+	set<int> intersectionset;
+	set_intersection(a.begin(), a.end(), b.begin(), b.end(), inserter(intersectionset, intersectionset.begin()));
+	double jaccardSim = double(intersectionset.size())/double(reunionset.size());
+	clock_t end = clock();
+	double elapsed_millisecs = double(end - begin) / (CLOCKS_PER_SEC/1000);
+	cout << ">> Temps d'execució de l'algorisme: " << elapsed_millisecs << " mil·lisegons" << endl;
+	return jaccardSim;
+	
 }
 
 // -------------- FUNCIONES DE DOCSIM 2 ----------------------------------
@@ -153,9 +180,13 @@ int main() {
     cout << "======= DocSim =======" << endl;
     showMenu(k,t);
     cin >> ops;
+    cout << endl;
     while(ops != 99) {
         if (ops == -1) {
-            //Integrar i tal
+            cout << "> Introdueix els nombres dels dos documents a comparar, separats per un espai" << endl;
+            int doc1, doc2;
+            cin >> doc1 >> doc2;
+            cout << ">> El grau de similitud de Jaccard dels documents és " << jaccard(paths[doc1], paths[doc2], k) << endl;
         }
         else if (ops == -2 ) {
           jaccardApproximation(paths,k,t);
@@ -200,9 +231,10 @@ int main() {
         else {
             cout << "L'operació no existeix" << endl;
         }
-        cout << "-------" << endl;
+        cout << "------------------------------------------" << endl;
         showMenu(k,t);
         cin >> ops;
+        cout << endl;
     }
 
 }
