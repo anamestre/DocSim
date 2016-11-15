@@ -22,14 +22,15 @@ class LocalitySensitive {
   private:
     int k, t, band, modBuckets;
     double threshold;
-    vector<vector<double> > buckets;
-    vector<vector<double> > matrix;
+    vector<vector<unsigned int> > buckets;
+    vector<vector<unsigned int> > matrix;
     vector<vector<bool> > marcats;
 
     void fillMatrix(const vector<string*>& files);
-    double hashFunction(const vector<double>& vec);
-    void fillColumn(vector<double>& col, int i, int z);
+    unsigned int hashFunction(const vector<unsigned int>& vec);
+    void fillColumn(vector<unsigned int>& col, int i, int z);
     void getBuckets();
+    bool afegirCandidat(int i, int j);
 
 };
 
