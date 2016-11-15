@@ -9,6 +9,7 @@
 #include <algorithm>
 #include "JaccApprox.hh"
 #include "parser.h"
+#include "LocalitySensitive.hh"
 using namespace std;
 
 string path = "./Generator/";
@@ -157,6 +158,21 @@ void jaccardApproximation(const vector<string>& paths, unsigned int k, unsigned 
   else cout << "Els fitxers no s'han llegit correctament." << endl;
 }
 
+// -------- FUNCIONS DE DOCSIM3 ---------------------------
+
+void calculaLocalitySensitive(const vector<string>& paths, unsigned int k, unsigned int t, unsigned int bands, unsigned int modBuckets){
+  vector<string> mFiles(paths.size());
+  bool readOK = readFiles(mFiles, paths);
+  if(readOK){
+      vector<string*> mFileReferences;
+      getReferencesFromFiles(mFiles,mFileReferences);
+      LocalitySensitive LSH(mFileReferences, k, t, bands, modBuckets);
+      LSH.printCandidates();
+  }
+  else cout << "Els fitxers no s'han llegit correctament." << endl;
+}
+
+
 // ----------------------------------------------
 
 void showMenu(unsigned int k, unsigned int t) {
@@ -190,6 +206,11 @@ int main() {
           jaccardApproximation(paths,k,t);
         }
         else if (ops == -3) {
+	  cout << "> Introdueix el nombre de bandes en el qual vols que es divideixi la matriu:" << endl;
+	  unsigned int bands, modBuckets;
+	  modBuckets = 100;
+	  cin >> bands;
+	  calculaLocalitySensitive(paths, k, t, bands, modBuckets);
 
         }
         else if (ops == -4) {

@@ -2,14 +2,16 @@
 
 using namespace std;
 
-LocalitySensitive::LocalitySensitive(const vector<string*>& files, int k, int t, int band, int modBuckets) {
-  fillMatrix(files);
+bool bandBool = true;
+
+LocalitySensitive::LocalitySensitive(const vector<string*>& files, unsigned int k, unsigned int t, unsigned int band, unsigned int modBuckets) {
   this->k = k;
   this->t = t;
   this->band = band;
   this->modBuckets = modBuckets;
-  int rows = files.size() / band;
-  this->threshold = pow(1/band, 1/rows);
+  fillMatrix(files);
+  unsigned int rows = files.size() / band;
+  this->threshold = pow((double) 1/this->band, (double) 1/rows);
 }
 
 
@@ -21,6 +23,10 @@ void LocalitySensitive::fillMatrix(const vector<string*>& files){
   vector<vector<unsigned int> > matriu(files.size(),vector<unsigned int>(files.size(),0.0));
   matrix = matriu;
   ja.obtainSignaturesMatrix(matrix);
+  if(matrix.size()% band != 0) {
+    cout << " > El nombre de bands no es correcte, ha de ser divisor de: " << matrix.size() << endl;
+    bandBool = false;
+  }
   vector<vector<bool> > b(files.size(), vector<bool>(files.size(), false));
   marcats = b;
 }
@@ -70,11 +76,13 @@ bool LocalitySensitive::afegirCandidat(int i, int j){
             ++fraccio;
         }
     }
-    if((fraccio/mida) >= 0.9) return true;
+   // cout << fraccio/mida << endl;
+    if((fraccio/mida) >= threshold) return true;
     return false;
 }
 
 void LocalitySensitive::getCandidates(map<int, list<int> >& documents){
+  if(bandBool){
   getBuckets();
   int n = buckets.size();
   int m = buckets[0].size();
@@ -94,10 +102,12 @@ void LocalitySensitive::getCandidates(map<int, list<int> >& documents){
         }
       }
     }
+  }
 }
 
 
 void LocalitySensitive::printCandidates(){
+  if(bandBool) {
   map<int, list<int> > documents;
   getCandidates(documents);
   map<int, list<int> > :: iterator it;
@@ -110,5 +120,5 @@ void LocalitySensitive::printCandidates(){
     }
   }
 }
-
+}
 
