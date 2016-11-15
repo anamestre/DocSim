@@ -5,14 +5,13 @@ using namespace std;
 bool bandBool = true;
 
 LocalitySensitive::LocalitySensitive(const vector<string*>& files, unsigned int k, unsigned int t, unsigned int band, unsigned int modBuckets) {
-  fillMatrix(files);
   this->k = k;
   this->t = t;
   this->band = band;
   this->modBuckets = modBuckets;
+  fillMatrix(files);
   unsigned int rows = files.size() / band;
-  this->threshold = pow((double) 1/band, (double) 1/rows);
-  cout << threshold << endl;
+  this->threshold = pow((double) 1/this->band, (double) 1/rows);
 }
 
 

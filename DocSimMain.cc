@@ -209,7 +209,8 @@ int main() {
         }
         else if (ops == -3) {
 	  cout << "> Introdueix el nombre de bandes en el qual vols que es divideixi la matriu:" << endl;
-	  int bands, modBuckets = 1000;
+	  unsigned int bands, modBuckets;
+	  modBuckets = 100;
 	  cin >> bands;
 	  calculaLocalitySensitive(paths, k, t, bands, modBuckets);
 
