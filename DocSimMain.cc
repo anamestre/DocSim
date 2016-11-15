@@ -140,6 +140,7 @@ void showMenu(unsigned int k, unsigned int t) {
     cout << "-3: Ús de l'algorisme LSH pel càlcul de similituds" << endl;
     cout << "-4: Càrrega de documents" << endl;
     cout << "-5: Modificar els paràmetres k i t (actualment, "<< k << " i " << t << ", valors per defecte 9 i 100, respectivament)" << endl;
+    cout << "-6: Comparar el resultat dels tres algorismes per a un conjunt de documents" << endl;
     cout << "99: Sortir"<< endl;
 }
 
@@ -192,6 +193,9 @@ int main() {
           cout << "Si us plau, entra els valors de k i t, separats per un espai" << endl;
           cin >> k >> t;
           cout << "Els valors de k i t s'han actualitzat a " << k << " i " << t << " respectivament." << endl;
+        }
+        else if (ops == -6) {
+          
         }
         else {
             cout << "L'operació no existeix" << endl;

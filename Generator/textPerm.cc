@@ -8,9 +8,12 @@ using namespace std;
 
 int contPerm;
 int numPerm;
+int step;
+int count;
 
 void mostra(const vector<string>& perm) {
    ++contPerm;
+   cout << "Llevo " << contPerm << endl;
    if (contPerm > numPerm) exit(0);
    else {
      string name="doc" + to_string(contPerm) + ".txt";
@@ -24,7 +27,8 @@ void mostra(const vector<string>& perm) {
 
 void permuta(vector<string>& perm, int i, vector< pair<string,bool> >& presents) {
   if (i == perm.size()) {
-    mostra(perm);
+  	++count;
+  	if (count%(step*1000000) == 0) mostra(perm);
   }
   else {
     for (int k = 0; k < presents.size(); ++k) {
@@ -39,11 +43,12 @@ void permuta(vector<string>& perm, int i, vector< pair<string,bool> >& presents)
 }
 
 int main(int argc, char *argv[]) {
-  if (argc != 2) {
-    cout << "Usage: ./textPerm N (nombre de permutacions que es vol obtenir)" << endl;
+  if (argc != 3) {
+    cout << "Usage: ./textPerm N Step (N: nombre de permutacions que es vol obtenir, Step: cada quants milions)" << endl;
     exit(1);
   }
   numPerm = atoi(argv[1]);
+  step = atoi(argv[2]);
   vector< pair<string,bool> > presents;
   string paraula;
   int numParaules = 0;
@@ -59,6 +64,7 @@ int main(int argc, char *argv[]) {
     presents.push_back(p);
   }
   contPerm = 0;
+  count = 0;
   vector<string> perm(numParaules);
   permuta(perm,0,presents);
 }

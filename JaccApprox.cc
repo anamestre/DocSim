@@ -9,11 +9,12 @@ JaccApprox::JaccApprox(unsigned int k, unsigned int t, vector<string*> mFiles) {
   valueToUptate = double(1)/double(t); // Value to sum when there is a match
 
   JaccApprox::bigPrimesVector = {547,563,733,619,691,829,911,701,599,601,827,659};
-  maxIntHash = 0x11111111;
+  maxIntHash = 0xFFFFFFFF;
 }
 
 unsigned int JaccApprox::hashFromShingle(const string& shingle) {
-  unsigned int a, b;
+  unsigned long a;
+  unsigned int b;
   a = mHV.hash_1;
   b = mHV.hash_2;
   for (unsigned int i = 0; i < shingle.length(); ++i) {
