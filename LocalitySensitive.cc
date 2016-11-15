@@ -8,26 +8,31 @@ LocalitySensitive::LocalitySensitive(const vector<string*>& files, int k, int t,
   this->t = t;
   this->band = band;
   this->modBuckets = modBuckets;
+  int rows = files.size() / band;
+  this->threshold = pow(1/band, 1/rows);
 }
+
+
+
 
 
 void LocalitySensitive::fillMatrix(const vector<string*>& files){
   JaccApprox ja(k,t,files);
-  vector<vector<double> > matriu(files.size(),vector<double>(files.size(),0.0));
+  vector<vector<unsigned int> > matriu(files.size(),vector<unsigned int>(files.size(),0.0));
   matrix = matriu;
-  ja.obtainJaccardApproximation(matrix);
+  ja.obtainSignaturesMatrix(matrix);
   vector<vector<bool> > b(files.size(), vector<bool>(files.size(), false));
   marcats = b;
 }
 
 
-double LocalitySensitive::hashFunction(const vector<double>& vec){
-   double num = 0.0;
+unsigned int LocalitySensitive::hashFunction(const vector<unsigned int>& vec){
+   unsigned int num = 0.0;
    for(int i = 0; i < vec.size(); ++i) num += vec[i];    
    return fmod(num,modBuckets);
 }
 
-void LocalitySensitive::fillColumn(vector<double>& col, int i, int z){
+void LocalitySensitive::fillColumn(vector<unsigned int>& col, int i, int z){
   int x = 0;
   for(int j = i; j < col.size(); ++j){
     col[x] = matrix[j][z];
@@ -42,10 +47,10 @@ void LocalitySensitive::getBuckets(){
   
   int rows = n / band;
   
-  vector<vector<double> > new_buckets(band, vector<double>(m, 0.0));
+  vector<vector<unsigned int> > new_buckets(band, vector<unsigned int>(m, 0.0));
   buckets = new_buckets;
   
-  vector<double> column(rows);
+  vector<unsigned int> column(rows);
   
   int j = 0;
   for(int b = 0; b < band; b += rows){ // recorrer les "files" -> les bands.
@@ -57,22 +62,36 @@ void LocalitySensitive::getBuckets(){
   }
 }
 
+bool LocalitySensitive::afegirCandidat(int i, int j){
+    double fraccio = 0.0;
+    double mida = (double) matrix.size();
+    for(int x = 0; x < mida; ++x){
+        if(matrix[x][i] == matrix[x][j]) {
+            ++fraccio;
+        }
+    }
+    if((fraccio/mida) >= 0.9) return true;
+    return false;
+}
+
 void LocalitySensitive::getCandidates(map<int, list<int> >& documents){
   getBuckets();
   int n = buckets.size();
   int m = buckets[0].size();
     for(int i = 0; i < n; ++i){
       for(int j = 0; j < m; ++j){
-	  double value = buckets[i][j];
-	  for(int x = j+1; x < m; ++x){
-	    double value2 = buckets[i][x];
-	    if(value == value2 and not marcats[j][x]) {
-	      documents[j].push_back(x);
-	      marcats[j][x] = true;
-	      marcats[x][j] = true;
-	      //documents[x].push_back(j);
-	    }
-	  }
+        unsigned int value = buckets[i][j];
+        for(int x = j+1; x < m; ++x){
+            unsigned int value2 = buckets[i][x];
+            if(not marcats[j][x] and value == value2) {
+                if(afegirCandidat(x, j)){
+                    documents[j].push_back(x);
+                    marcats[j][x] = true;
+                    marcats[x][j] = true;
+                    //documents[x].push_back(j);
+                }
+            }
+        }
       }
     }
 }
