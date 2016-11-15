@@ -2,10 +2,6 @@
 
 using namespace std;
 
-vector<vector<double> > buckets;
-vector<vector<double> > matrix;
-vector<vector<bool> > marcats;
-
 LocalitySensitive :: LocalitySensitive(const vector<string*>& files, int k, int t, int band, int modBuckets) {
   fillMatrix(files);
   this->k = k;
