@@ -2,7 +2,7 @@
 
 using namespace std;
 
-LocalitySensitive :: LocalitySensitive(const vector<string*>& files, int k, int t, int band, int modBuckets) {
+LocalitySensitive::LocalitySensitive(const vector<string*>& files, int k, int t, int band, int modBuckets) {
   fillMatrix(files);
   this->k = k;
   this->t = t;
@@ -11,7 +11,7 @@ LocalitySensitive :: LocalitySensitive(const vector<string*>& files, int k, int 
 }
 
 
-void LocalitySensitive :: fillMatrix(const vector<string*>& files){
+void LocalitySensitive::fillMatrix(const vector<string*>& files){
   JaccApprox ja(k,t,files);
   vector<vector<double> > matriu(files.size(),vector<double>(files.size(),0.0));
   matrix = matriu;
@@ -21,13 +21,13 @@ void LocalitySensitive :: fillMatrix(const vector<string*>& files){
 }
 
 
-double LocalitySensitive :: hashFunction(const vector<double>& vec){
+double LocalitySensitive::hashFunction(const vector<double>& vec){
    double num = 0.0;
    for(int i = 0; i < vec.size(); ++i) num += vec[i];    
    return fmod(num,modBuckets);
 }
 
-void LocalitySensitive :: fillColumn(vector<double>& col, int i, int z){
+void LocalitySensitive::fillColumn(vector<double>& col, int i, int z){
   int x = 0;
   for(int j = i; j < col.size(); ++j){
     col[x] = matrix[j][z];
@@ -36,7 +36,7 @@ void LocalitySensitive :: fillColumn(vector<double>& col, int i, int z){
 }
   
 // Pre: band és divisor de la mida de files de la matriu de signatures.
-void LocalitySensitive ::getBuckets(){
+void LocalitySensitive::getBuckets(){
   int n = matrix.size();
   int m = matrix[0].size();
   
@@ -57,7 +57,7 @@ void LocalitySensitive ::getBuckets(){
   }
 }
 
-void LocalitySensitive :: getCandidates(map<int, list<int> >& documents){
+void LocalitySensitive::getCandidates(map<int, list<int> >& documents){
   getBuckets();
   int n = buckets.size();
   int m = buckets[0].size();
