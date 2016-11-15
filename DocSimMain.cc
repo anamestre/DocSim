@@ -161,7 +161,7 @@ void jaccardApproximation(const vector<string>& paths, unsigned int k, unsigned 
 
 // -------- FUNCIONS DE DOCSIM3 ---------------------------
 
-void calculaLocalitySensitive(const vector<string>& paths, unsigned int k, unsigned int t, int bands, int modBuckets){
+void calculaLocalitySensitive(const vector<string>& paths, unsigned int k, unsigned int t, unsigned int bands, unsigned int modBuckets){
   vector<string> mFiles(paths.size());
   bool readOK = readFiles(mFiles, paths);
   if(readOK){

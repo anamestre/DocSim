@@ -15,12 +15,12 @@ using namespace std;
 
 class LocalitySensitive {
   public:  
-    LocalitySensitive(const vector<string*>& files, int k, int t, int band, int modBuckets);
+    LocalitySensitive(const vector<string*>& files, unsigned int k, unsigned int t, unsigned int band, unsigned int modBuckets);
     void getCandidates(map<int, list<int> >& documents);
     void printCandidates();
   
   private:
-    int k, t, band, modBuckets;
+    unsigned int k, t, band, modBuckets;
     double threshold;
     vector<vector<unsigned int> > buckets;
     vector<vector<unsigned int> > matrix;

@@ -4,15 +4,15 @@ using namespace std;
 
 bool bandBool = true;
 
-LocalitySensitive::LocalitySensitive(const vector<string*>& files, int k, int t, int band, int modBuckets) {
+LocalitySensitive::LocalitySensitive(const vector<string*>& files, unsigned int k, unsigned int t, unsigned int band, unsigned int modBuckets) {
   fillMatrix(files);
   this->k = k;
   this->t = t;
   this->band = band;
   this->modBuckets = modBuckets;
-  int rows = files.size() / band;
+  unsigned int rows = files.size() / band;
   this->threshold = pow((double) 1/band, (double) 1/rows);
-  //cout << threshold << endl;
+  cout << threshold << endl;
 }
 
 
