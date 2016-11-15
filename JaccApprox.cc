@@ -61,6 +61,16 @@ void JaccApprox::updateSimValues(const vector<unsigned int>& signatures, vector<
   }
 }
 
+void JaccApprox::obtainSignaturesMatrix(vector<vector<unsigned int> >& result) {
+  vector<unsigned int> signatures(mFiles.size());
+  srand (time(NULL));
+  for (unsigned int i = 0; i < t; ++i) {
+    getNewHashValues();
+    computeSignatures(signatures);
+    result.push_back(signatures);
+  }
+}
+
 void JaccApprox::obtainJaccardApproximation(vector<vector<double> >& result) {
   vector<unsigned int> signatures(mFiles.size());
   srand (time(NULL));

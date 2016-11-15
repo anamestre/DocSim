@@ -19,6 +19,7 @@ class JaccApprox {
   public:
     JaccApprox(unsigned int k, unsigned int t, vector<string*> mFiles);
     void obtainJaccardApproximation(vector<vector<double> >& result);
+    void obtainSignaturesMatrix(vector<vector<unsigned int> >& result);
   private:
       unsigned int t; // number of hash functions used
       unsigned int k; // size of the shingles
