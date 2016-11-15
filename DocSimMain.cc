@@ -49,7 +49,7 @@ int getNumOfFiles(string path) {
 
   if (dp != NULL) {
     while (ep = readdir(dp)) i++;
-    if (path == "./Generator/") return i-6; //6 archivos necesarios (makefile, codigo fuente.. etc) que no son para procesar
+    if (path == "./Generator/") return i-5; //. , .. , ejecutable, textToPermute, codigoFuente
     else return i-2; // En caso de CustomDocs, solo son 2 archivos extra (. , ..)
     (void) closedir (dp);
   }
@@ -78,7 +78,7 @@ double jaccard(string pathdoc1, string pathdoc2, int k) {
 	double elapsed_millisecs = double(end - begin) / (CLOCKS_PER_SEC/1000);
 	cout << ">> Temps d'execució de l'algorisme: " << elapsed_millisecs << " mil·lisegons" << endl;
 	return jaccardSim;
-	
+
 }
 
 // -------------- FUNCIONES DE DOCSIM 2 ----------------------------------
@@ -226,7 +226,7 @@ int main() {
           cout << "Els valors de k i t s'han actualitzat a " << k << " i " << t << " respectivament." << endl;
         }
         else if (ops == -6) {
-          
+
         }
         else {
             cout << "L'operació no existeix" << endl;
