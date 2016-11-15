@@ -27,7 +27,6 @@ void loadPaths (string path, int num, vector<string>& paths) {
 bool loadDoc(int num, string& doc, const vector<string>& paths) {
     ifstream file;
     file.open(paths[num].c_str());
-    //cout << "Path: " << paths[num].c_str() << endl;
     if (file.is_open()) {
         file.seekg(0, file.end);
         int length = file.tellg();
@@ -110,7 +109,7 @@ void mostraResultat(const vector<vector< double > >& matriu) {
 
 bool readFiles(vector<string>& mFiles, const vector<string>& paths) {
   if (paths.size() == 0) {
-    cout << "Error: No s'han carregat els paths." << endl;
+    cout << "Error: No s'han trobat els fitxers. S'han de carregar amb la opcio -4" << endl;
     return false;
   }
   else {
@@ -167,7 +166,6 @@ void showMenu(unsigned int k, unsigned int t) {
     cout << "-3: Ús de l'algorisme LSH pel càlcul de similituds" << endl;
     cout << "-4: Càrrega de documents" << endl;
     cout << "-5: Modificar els paràmetres k i t (actualment, "<< k << " i " << t << ", valors per defecte 9 i 100, respectivament)" << endl;
-    cout << "-6: Comparar el resultat dels tres algorismes per a un conjunt de documents" << endl;
     cout << "99: Sortir"<< endl;
 }
 
@@ -186,7 +184,7 @@ int main() {
             cout << "> Introdueix els nombres dels dos documents a comparar, separats per un espai" << endl;
             int doc1, doc2;
             cin >> doc1 >> doc2;
-            cout << ">> El grau de similitud de Jaccard dels documents és " << jaccard(paths[doc1], paths[doc2], k) << endl;
+            cout << ">> El grau de similitud de Jaccard dels documents és " << jaccard(paths[doc1-1], paths[doc2-1], k) << endl;
         }
         else if (ops == -2 ) {
           jaccardApproximation(paths,k,t);
@@ -224,9 +222,6 @@ int main() {
           cout << "Si us plau, entra els valors de k i t, separats per un espai" << endl;
           cin >> k >> t;
           cout << "Els valors de k i t s'han actualitzat a " << k << " i " << t << " respectivament." << endl;
-        }
-        else if (ops == -6) {
-
         }
         else {
             cout << "L'operació no existeix" << endl;
