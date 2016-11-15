@@ -10,8 +10,6 @@ LocalitySensitive::LocalitySensitive(const vector<string*>& files, unsigned int 
   this->band = band;
   this->modBuckets = modBuckets;
   fillMatrix(files);
-  unsigned int rows = files.size() / band;
-  this->threshold = pow((double) 1/this->band, (double) 1/rows);
 }
 
 
@@ -22,7 +20,12 @@ void LocalitySensitive::fillMatrix(const vector<string*>& files){
   JaccApprox ja(k,t,files);
   vector<vector<unsigned int> > matriu(files.size(),vector<unsigned int>(files.size(),0.0));
   matrix = matriu;
+  
   ja.obtainSignaturesMatrix(matrix);
+  int rows = matrix.size() / band;
+  this->threshold = pow((double) 1/this->band, (double) 1/rows);
+
+  
   if(matrix.size()% band != 0) {
     cout << " > El nombre de bands no es correcte, ha de ser divisor de: " << matrix.size() << endl;
     bandBool = false;
@@ -116,7 +119,7 @@ void LocalitySensitive::printCandidates(){
   cout << "Documents candidats a ser similars" << endl;
   for(it = documents.begin(); it != documents.end(); ++it){
     for(it2 = it->second.begin(); it2 != it->second.end(); ++it2){
-      cout << it->first << " i "  << *it2 << endl;
+      cout << it->first << " "  << *it2 << endl;
     }
   }
 }
