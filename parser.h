@@ -24,7 +24,7 @@ int hash_shingle(string shingle) {
 	for (int i = 0; i < shingle.size(); ++i) {
 		hash += shingle[i];
 	}
-	return hash%maxhash;
+	return hash%(maxhash+1);
 }
 
 
